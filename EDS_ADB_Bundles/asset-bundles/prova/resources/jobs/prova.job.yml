@@ -1,0 +1,14 @@
+resources:
+  jobs:
+    prova_job:
+      name: prova_job
+      tasks:
+        - task_key: carica
+          notebook_task:
+            notebook_path: ../../notebooks/bronze/LOAD_PROVA
+
+        - task_key: pulisci
+          depends_on:
+            - task_key: carica
+          notebook_task:
+            notebook_path: ../../notebooks/silver/CLEAN_PROVA
