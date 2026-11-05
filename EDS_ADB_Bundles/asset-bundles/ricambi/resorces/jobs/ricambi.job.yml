@@ -1,0 +1,14 @@
+resources:
+  jobs:
+    ricambi_job:
+      name: ricambi_job
+      tasks:
+        - task_key: carica
+          notebook_task:
+            notebook_path: ../../notebooks/bronze/load_ricambi
+
+        - task_key: pulisci
+          depends_on:
+            - task_key: carica
+          notebook_task:
+            notebook_path: ../../notebooks/silver/clean_ricambi
