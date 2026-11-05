@@ -1,0 +1,8 @@
+resources:
+  jobs:
+    prova_job:
+      name: prova_job
+      tasks:
+        - task_key: carica
+          notebook_task:
+            notebook_path: ../../notebooks/bronze/LOAD_PROVA
