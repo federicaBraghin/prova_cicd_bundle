@@ -1,0 +1,14 @@
+bundle:
+  name: ricambi
+
+include:
+  - resources/jobs/*.yml
+
+targets:
+  dev:
+    mode: development
+    default: true
+  cert:
+    mode: production
+  prod:
+    mode: production
