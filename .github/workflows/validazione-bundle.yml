@@ -1,0 +1,42 @@
+name: Validazione bundle
+
+on:
+  pull_request:
+    branches:
+      - certification
+      - production
+
+jobs:
+  valida:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Scarico il codice
+        uses: actions/checkout@v4
+
+      - name: Controllo il prefisso del branch
+        env:
+          BRANCH: ${{ github.head_ref }}
+        run: |
+          echo "Branch di partenza: $BRANCH"
+          if [[ "$BRANCH" != Bundle/* && "$BRANCH" != Hotfix/* ]]; then
+            echo "ERRORE: il branch deve iniziare con Bundle/ o Hotfix/"
+            exit 1
+          fi
+          echo "OK: prefisso valido"
+
+      - name: Controllo il bundle
+        env:
+          BRANCH: ${{ github.head_ref }}
+        run: |
+          NOME="${BRANCH#*/}"
+          FILE="EDS_ADB_Bundles/asset-bundles/$NOME/databricks.yml"
+          echo "Cerco il bundle: $FILE"
+          if [ ! -f "$FILE" ]; then
+            echo "ERRORE: non trovo $FILE"
+            exit 1
+          fi
+          if ! grep -q "^  name: $NOME$" "$FILE"; then
+            echo "ERRORE: il nome nel databricks.yml non corrisponde al branch ($NOME)"
+            exit 1
+          fi
+          echo "OK: bundle $NOME trovato e coerente con il branch"
