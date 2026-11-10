@@ -1,0 +1,45 @@
+resources:
+  jobs:
+    co2_emissions_job:
+      name: co2_emissions_job
+
+      # ogni giorno alle 6 (in modalità dev Databricks la mette in pausa da solo)
+      schedule:
+        quartz_cron_expression: "0 0 6 * * ?"
+        timezone_id: Europe/Rome
+
+      parameters:
+        - name: catalog
+          default: ${var.catalog}
+        - name: percorso_raw
+          default: ${var.percorso_raw}
+
+      tasks:
+        # --- bronze e ref: partono insieme ---
+        - task_key: bronze_co2_emissions
+          notebook_task:
+            notebook_path: ../../notebooks/jobs/LOAD_co2_emissions_canada.ipynb
+
+        - task_key: ref_tipo_carburante
+          notebook_task:
+            notebook_path: ../../notebooks/jobs/LOAD_ref_tipo_carburante.ipynb
+
+        - task_key: ref_tipo_cambio
+          notebook_task:
+            notebook_path: ../../notebooks/jobs/LOAD_ref_tipo_cambio.ipynb
+
+        # --- silver: aspetta i tre precedenti ---
+        - task_key: silver_veicoli_emissioni
+          depends_on:
+            - task_key: bronze_co2_emissions
+            - task_key: ref_tipo_carburante
+            - task_key: ref_tipo_cambio
+          notebook_task:
+            notebook_path: ../../notebooks/jobs/LOAD_veicoli_emissioni.ipynb
+
+        # --- gold: aspetta il silver ---
+        - task_key: gold_emissioni_per_marca
+          depends_on:
+            - task_key: silver_veicoli_emissioni
+          notebook_task:
+            notebook_path: ../../notebooks/jobs/LOAD_fct_emissioni_per_marca.ipynb

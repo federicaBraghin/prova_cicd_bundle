@@ -1,0 +1,26 @@
+bundle:
+  name: co2_emissions
+
+include:
+  - resources/jobs/*.yml
+
+variables:
+  catalog:
+    description: Il catalog in cui il job legge e scrive
+    default: workspace
+  percorso_raw:
+    description: Il file CSV di partenza nel volume
+    default: /Volumes/workspace/raw/co2_emissions/co2_emissions_canada.csv
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: https://dbc-45de28bb-7159.cloud.databricks.com
+
+  prod:
+    mode: production
+    workspace:
+      host: https://dbc-45de28bb-7159.cloud.databricks.com
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
