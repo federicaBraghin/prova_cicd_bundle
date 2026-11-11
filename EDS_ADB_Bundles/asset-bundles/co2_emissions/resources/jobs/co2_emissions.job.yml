@@ -26,7 +26,7 @@ resources:
 
         - task_key: ref_tipo_cambio
           notebook_task:
-            notebook_path: ../../notebooks/jobs/LOAD_ref_tipo_cambio.ipynb
+            notebook_path: ../../notebooks/jobs/carica_cambi.ipynb
 
         # --- silver: aspetta i tre precedenti ---
         - task_key: silver_veicoli_emissioni
