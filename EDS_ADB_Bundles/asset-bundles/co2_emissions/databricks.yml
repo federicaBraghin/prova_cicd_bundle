@@ -1,5 +1,5 @@
 bundle:
-  name: co2_emissions
+  name: co2_emission
 
 include:
   - resources/jobs/*.yml
